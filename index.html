@@ -1,0 +1,105 @@
+
+<!--
+Ciclo de vida de un componente
+Todos los componentes tienen momento,
+Montado:
+Constructor() → definir estado
+conponentWillMount() → Aún no esta el DOM, no se deben hacer peticiones sincronas
+render() → dibujamos el dom
+componentDidMount → Después que la aplicación se monta
+Actualización:
+componentWillReceiveProps(nextProps)
+shouldComponentUpdate(nextProps, nextState) → prueba si es necesario actualizar el componente
+componentWillUpdate(nextProps, nextState) → el componente sera montado
+render() → Renderiza la aplicación
+componenteDidUpdate(prevProps, prevstate) → podemos volver a asignar algo
+Desmontado:
+componentWillUnmount() → Limpiar eventos o eliminar algunas cosas
+-->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Document</title>
+</head>
+<body>
+  <main id="app"></main>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.18.2/babel.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/15.3.2/react-dom.js"></script>
+  <script type="text/babel">
+    function Hola(props) {
+      return (
+        <h1 id="Title" onClick={props.onClick}>
+          Hola {props.name} {props.count}
+        </h1>
+      );
+    }
+
+    class MiComponente extends React.Component {
+      constructor(props) {
+        super(props);
+
+        this.state = {
+          count: 0,
+        };
+
+        this.handleClick = this.handleClick.bind(this);
+      }
+
+      componentWillMount() {
+        console.log('el componente se va a montar');
+      }
+
+      componentDidMount() {
+        document.addEventListener('click', this.handleClick);
+      }
+
+      // componentWillReceiveProps(nextProps) {
+      //   this.setState({
+      //     count: this.state.count * 2,
+      //   });
+      // }
+
+      shouldComponentUpdate(nextProps, nextState) {
+        if (nextState.count !== this.state.count) return true;
+        return false;
+      }
+
+      componentWillUpdate() {
+        console.log('el componente se va a actualizar');
+      }
+
+      componentDidUpdate() {
+        console.log('el componente se actualizó');
+      }
+
+      componentWillUnmount() {
+        document.removeEventListener('click', this.handleClick);
+      }
+
+      handleClick() {
+        this.setState({
+          count: this.state.count + 1,
+        });
+      }
+
+      render() {
+        return (
+          <Hola
+            name={this.props.name}
+            count={this.state.count}
+            onClick={this.handleClick}
+          />
+        );
+      }
+    }
+
+    ReactDOM.render(
+      <MiComponente name="Platzi" />,
+      document.getElementById('app')
+    );
+  </script>
+</body>
+</html>
